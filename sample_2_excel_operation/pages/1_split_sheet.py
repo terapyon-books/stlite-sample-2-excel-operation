@@ -2,8 +2,8 @@ from io import BytesIO
 import streamlit as st
 import pandas as pd
 
-if "uploaded_file" not in st.session_state:
-    st.session_state.uploaded_file = None
+if "uploaded_split_file" not in st.session_state:
+    st.session_state.uploaded_split_file = None
 
 
 @st.cache_data
@@ -16,19 +16,19 @@ st.title("Excelシートの分割")
 st.text("Excelファイルのシートのデータを分割をします。")
 
 st.header("入力データ")
-if st.session_state.uploaded_file is None:
+if st.session_state.uploaded_split_file is None:
     st.subheader("Excelファイルをアップロードします。")
 
-    uploaded_file = st.file_uploader("Excelファイル", type="xlsx")
-    if uploaded_file and st.button("アップロード"):
-        st.session_state.uploaded_file = uploaded_file
+    uploaded_split_file = st.file_uploader("Excelファイル", type="xlsx")
+    if uploaded_split_file and st.button("アップロード"):
+        st.session_state.uploaded_split_file = uploaded_split_file
         st.rerun()
 else:
     st.subheader("アップロード済みのファイル")
     if st.button("ファイルを削除"):
-        st.session_state.uploaded_file = None
+        st.session_state.uploaded_split_file = None
         st.rerun()
-    temp_df = get_data(st.session_state.uploaded_file)
+    temp_df = get_data(st.session_state.uploaded_split_file)
     ignored_columns = st.multiselect("無視する列", temp_df.columns.to_list())
     ignored_rows = st.multiselect("無視する行", temp_df.index.to_list())
     if ignored_rows:
@@ -36,7 +36,7 @@ else:
     else:
         replace_columns = False
     selected_df = temp_df.drop(ignored_rows, axis=0).drop(ignored_columns, axis=1)
-    st.write(st.session_state.uploaded_file.name)
+    st.write(st.session_state.uploaded_split_file.name)
 
     if replace_columns:
         df = selected_df.iloc[1:, :]
