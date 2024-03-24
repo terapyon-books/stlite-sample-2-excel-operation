@@ -22,46 +22,44 @@ if st.session_state.uploaded_file is None:
     uploaded_file = st.file_uploader("Excelファイル", type="xlsx")
     if uploaded_file and st.button("アップロード"):
         st.session_state.uploaded_file = uploaded_file
-        st.experimental_rerun()
+        st.rerun()
 else:
     st.subheader("アップロード済みのファイル")
     if st.button("ファイルを削除"):
         st.session_state.uploaded_file = None
-        st.experimental_rerun()
+        st.rerun()
     temp_df = get_data(st.session_state.uploaded_file)
     ignored_columns = st.multiselect("無視する列", temp_df.columns.to_list())
     ignored_rows = st.multiselect("無視する行", temp_df.index.to_list())
+    if ignored_rows:
+        replace_columns = st.toggle("列名を置換する")
+    else:
+        replace_columns = False
     selected_df = temp_df.drop(ignored_rows, axis=0).drop(ignored_columns, axis=1)
     st.write(st.session_state.uploaded_file.name)
-    st.write(selected_df)
-    
-    # df = selected_df.iloc[1:, :]
-    columns_name = selected_df.iloc[0, :]
-    if not ignored_columns:
-        df = selected_df.drop_index()
-    if columns_name.notna().all() and all(isinstance(name, str) for name in columns_name):
-        df = pd.DataFrame(selected_df.iloc[1:, :].values, columns=columns_name)
+
+    if replace_columns:
+        df = selected_df.iloc[1:, :]
+        columns_name = selected_df.iloc[0, :]
+        if columns_name.notna().all() and all(
+            isinstance(name, str) for name in columns_name
+        ):
+            df.columns = columns_name
     else:
-        df = pd.DataFrame(selected_df.iloc[1:, :].values)
-    #     df.columns = columns_name
-    # df = df.reset_index(drop=True)
-    
-    st.write(df.dtypes)  # TODO: 選択肢に寄ってエラーになる。
-    st.write(df)
-
-
+        df = selected_df
+    # st.write(df.dtypes)
+    st.dataframe(df)  # ここでエラーになるケースがある。原因不明
 
     columns = df.columns.to_list()
     selected_columns = st.selectbox("選択する列", columns)
     if selected_columns:
-        # st.write(selected_columns)
         grouped_columns = df.groupby(selected_columns)
         number_of_values = grouped_columns.size()
         st.write(number_of_values)
         has_df = False
         for group_name, grouped_df in grouped_columns:
             st.subheader(group_name)
-            st.write(grouped_df)
+            st.dataframe(grouped_df)
             has_df = True
         if has_df:
             output = BytesIO()
