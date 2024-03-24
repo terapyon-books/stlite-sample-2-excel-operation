@@ -12,7 +12,7 @@ def get_data(file) -> pd.DataFrame:
     return df
 
 
-st.title("Excelシートの分割・結合")
+st.title("Excelシートの分割")
 st.text("Excelファイルのシートのデータを分割をします。")
 
 st.header("入力データ")
