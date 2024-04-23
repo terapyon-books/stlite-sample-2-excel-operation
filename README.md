@@ -67,7 +67,7 @@ GitHubからパッケージをダウンロードしてインストール（推�
 ## 起動方法
 
 ```
-(venv) % streamlit run stlite-sample-2-excel-operation/streamlit_app.py
+(venv) % streamlit run stlite_sample_2_excel_operation/streamlit_app.py
 ```
 
 ## 表示確認
