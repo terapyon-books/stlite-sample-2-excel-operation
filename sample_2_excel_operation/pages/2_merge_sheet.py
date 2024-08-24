@@ -4,9 +4,6 @@ from typing import Literal
 import streamlit as st
 import pandas as pd
 
-if "uploaded_merge_file" not in st.session_state:
-    st.session_state.uploaded_merge_file = None
-
 
 @st.cache_data
 def get_data(file) -> tuple[list[int | str], list[pd.DataFrame]]:
@@ -23,21 +20,11 @@ st.title("Excelシートの結合")
 st.text("Excelファイルのシートを結合します。")
 
 st.header("入力データ")
-if st.session_state.uploaded_merge_file is None:
-    st.subheader("Excelファイルをアップロードします。")
-
-    uploaded_merge_file = st.file_uploader("Excelファイル", type="xlsx")
-    if uploaded_merge_file and st.button("アップロード"):
-        st.session_state.uploaded_merge_file = uploaded_merge_file
-        st.rerun()
-else:
-    st.subheader("アップロード済みのファイル")
-    if st.button("ファイルを削除"):
-        st.session_state.uploaded_merge_file = None
-        st.rerun()
-    sheet_names, temp_dfs = get_data(st.session_state.uploaded_merge_file)
+uploaded_merge_file = st.file_uploader("Excelファイル", type="xlsx")
+if uploaded_merge_file:
+    sheet_names, temp_dfs = get_data(uploaded_merge_file)
     ignored_sheets = st.multiselect("無視するシート", sheet_names)
-    st.write(st.session_state.uploaded_merge_file.name)
+    st.write(uploaded_merge_file.name)
 
     dfs: list[pd.DataFrame] = []
     for sheet_name, temp_df in zip(sheet_names, temp_dfs):
