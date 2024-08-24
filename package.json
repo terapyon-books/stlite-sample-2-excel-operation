@@ -1,6 +1,6 @@
 {
     "name": "sample-2-excel-operation",
-    "version": "0.1.4",
+    "version": "0.2.0",
     "homepage": "https://github.com/terapyon-books/stlite-sample-2-excel-operation",
     "author": {
         "name": "Manabu TERADA",
@@ -25,9 +25,19 @@
       }
     },
     "devDependencies": {
-      "@stlite/desktop": "^0.52.0",
+      "@stlite/desktop": "^0.63.1",
       "cross-env": "^7.0.3",
-      "electron": "^28.2.1",
-      "electron-builder": "^24.9.1"
-    }
+      "electron": "30.0.8",
+      "electron-builder": "^24.13.3"
+    },
+    "stlite": {
+      "desktop": {
+        "files": [
+          "sample_2_excel_operation/streamlit_app.py", 
+          "sample_2_excel_operation/pages/*.py"
+        ],
+        "entrypoint": "sample_2_excel_operation/streamlit_app.py",
+        "requirementsTxtFiles": ["requirements.txt"]
+      }
   }
+}
