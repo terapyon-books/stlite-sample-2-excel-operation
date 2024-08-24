@@ -28,11 +28,10 @@ if uploaded_split_file:
         if columns_name.notna().all() and all(
             isinstance(name, str) for name in columns_name
         ):
-            df.columns = columns_name
+            df.columns = columns_name.values
     else:
         df = selected_df
-    # st.write(df.dtypes)
-    st.dataframe(df)  # ここでエラーになるケースがある。原因不明
+    st.dataframe(df)
 
     columns = df.columns.to_list()
     selected_columns = st.selectbox("選択する列", columns)
